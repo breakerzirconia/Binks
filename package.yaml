@@ -1,6 +1,6 @@
-name:                unnamedesolang
+name:                binks
 version:             0.0.0.0
-github:              "breakerzirconia/unnamedesolang"
+github:              "breakerzirconia/binks"
 license:             MIT
 author:              "Constantine Ter-Matevosian"
 maintainer:          "terkot1010@gmail.com"
@@ -17,7 +17,7 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/githubuser/unnamedesolang#readme>
+description:         Please see the README on GitHub at <https://github.com/githubuser/binks#readme>
 
 dependencies:
 - base >= 4.7 && < 5
@@ -27,7 +27,7 @@ library:
   source-dirs: src
 
 executables:
-  unnamedesolang-exe:
+  binks-exe:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -35,10 +35,10 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - unnamedesolang
+    - binks
 
 tests:
-  unnamedesolang-test:
+  binks-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
@@ -46,4 +46,4 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - unnamedesolang
+    - binks

@@ -1,4 +1,4 @@
-# Unnamed esolang, v0.0.0
+# Binks, v0.0.0
 
 If you're viewing this, this marks the absolute beginning of the absolute beginning of the implementation of the language syntax and specifics :)
 
@@ -37,9 +37,7 @@ Let's now construct the **3rd layer** of linking:
 
 It contains 21 elements.
 
-The sequence of lengths is [A001699](https://oeis.org/A001699)[^1].
-
-[^1]: To be formally proven.
+The sequence of lengths is [A001699](https://oeis.org/A001699), coming from the fact that the system of links represents the binary trees, and the layers represent the heights.
 
 ## How to verbally pronounce the parenthesized concatenations?
 

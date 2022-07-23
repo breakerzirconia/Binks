@@ -1,6 +1,6 @@
 {-# LANGUAGE LambdaCase #-}
 
-module Eso.Lang where
+module Eso.Binks where
 
 import           Data.Set as Set
 
