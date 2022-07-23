@@ -1,4 +1,4 @@
-# Binks, v0.0.0
+# Binks v0.0.0
 
 If you're viewing this, this marks the absolute beginning of the absolute beginning of the implementation of the language syntax and specifics :)
 
