@@ -1,5 +1,5 @@
 name:                binks
-version:             0.0.0.0
+version:             0.0.0.1
 github:              "breakerzirconia/binks"
 license:             MIT
 author:              "Constantine Ter-Matevosian"
@@ -19,23 +19,40 @@ extra-source-files:
 # common to point users to the README.md file.
 description:         Please see the README on GitHub at <https://github.com/githubuser/binks#readme>
 
+default-extensions:
+- LambdaCase
+- OverloadedStrings
+
 dependencies:
 - base >= 4.7 && < 5
 - containers
+- megaparsec
+- text
 
 library:
   source-dirs: src
 
 executables:
-  binks-exe:
+  binks:
     main:                Main.hs
-    source-dirs:         app
+    source-dirs:         app/interpreter
     ghc-options:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
     - binks
+
+  binksi:
+    main:                Main.hs
+    source-dirs:         app/repl
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - binks
+    - haskeline
 
 tests:
   binks-test:
