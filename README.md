@@ -1,12 +1,17 @@
-# Binks, v0.0.0
+# Binks v0.0.0.1
 
 If you're viewing this, this marks the absolute beginning of the absolute beginning of the implementation of the language syntax and specifics :)
+
+**Binks** (play on words, lit. *binary links*) is an
+1. interpreted -- because the source code is processed by the parser (written in Haskell) and then immediately executed;
+2. esoteric -- because there is absolutely no way to write meaningful, optimal real-world software in it;
+3. programming language -- because... it's a programming language. *Tautology!*
 
 ## Basic constructs & layers of linking
 
 So far I have had an idea of a `Node` that can be constructed with `[<>]`. This could denote an allocated space for some(?) data. Nodes can be synonymously called `0-links` and represent the simplest construct from which links can be created. `Node`s belong to the **0th layer** of linking.
 
-The **kth layer** of linking can be constructed by pairing all the elements from the previous **k** layers in a link that has not yet been constructed. This is equivalent to pairing all the elements from the previous **k** layers where one of the two elements needs to belong to the **(k - 1)st layer**.
+The **kth layer** of linking can be built by pairing all the elements from the previous **k** layers in links that have not yet been constructed. This is equivalent to pairing all the elements from the previous **k** layers where one of the two elements needs to belong to the **(k - 1)st layer**.
 
 Thus, the **1st layer** consists of only one link: `[[<>]--[<>]]`. This is called a `00-link` or a `1-link`.
 
@@ -37,7 +42,7 @@ Let's now construct the **3rd layer** of linking:
 
 It contains 21 elements.
 
-The sequence of lengths is [A001699](https://oeis.org/A001699), coming from the fact that the system of links represents the binary trees, and the layers represent the heights.
+These cardinalities (1, 1, 3, 21, etc.) form a sequence [A001699](https://oeis.org/A001699), which comes from the fact that the system of links represents the binary trees, and the layers represent the heights.
 
 ## How to verbally pronounce the parenthesized concatenations?
 
