@@ -1,59 +1,79 @@
-# Binks v0.0.0.1
+# Binks v0.0.1
 
-If you're viewing this, this marks the absolute beginning of the absolute beginning of the implementation of the language syntax and specifics :)
+***NOTICE! This language is in its earliest stages of development, so beware of the ever so frequent breaking changes.***
 
 **Binks** (play on words, lit. *binary links*) is an
 1. interpreted -- because the source code is processed by the parser (written in Haskell) and then immediately executed;
 2. esoteric -- because there is absolutely no way to write meaningful, optimal real-world software in it;
 3. programming language -- because... it's a programming language. *Tautology!*
 
-## Basic constructs & layers of linking
+## Basic Syntax
 
-So far I have had an idea of a `Node` that can be constructed with `[<>]`. This could denote an allocated space for some(?) data. Nodes can be synonymously called `0-links` and represent the simplest construct from which links can be created. `Node`s belong to the **0th layer** of linking.
+### ⬖ Creating the nodes and the links
 
-The **kth layer** of linking can be built by pairing all the elements from the previous **k** layers in links that have not yet been constructed. This is equivalent to pairing all the elements from the previous **k** layers where one of the two elements needs to belong to the **(k - 1)st layer**.
+The central data structure in Binks is the **binary tree**. The interior nodes connect two subtrees, but only the leaves can hold the data.
+In Binks, the leaves are called *Nodes* or, synonymously, *0-links*, and they represent the simplest construct from which *Links* can be created. *Links* is the Binks' term for interior nodes. A *Link* of two *Nodes* is called a *1-link*. A *link* is either a *Node* or a *Link* (the structure is unspecified).
 
-Thus, the **1st layer** consists of only one link: `[[<>]--[<>]]`. This is called a `00-link` or a `1-link`.
+1. Create the *Node* `a` that holds a value `0`:
+   ```
+   a [<0>]
+   ```
+2. Create the *Link* `b` between `a` and the *Node* that holds a value 1 (the order matters):
+   ```
+   b a [<1>]
+   ```
+3. Create the *Link* `c` between `a` and `b`:
+   ```
+   c a b
+   ```
+4. Create the *Link* `d` of nested structure (spaces matter):
+   ```
+   d ([<-19>] b) a
+   ```
+### ⬖ Printing the *link* (REPL)
 
-The **2nd layer** contains 3 links:
-* `[[<>]--[[<>]--[<>]]]`, also called a `01-link`,
-* `[[[<>]--[<>]]--[<>]]`, a `10-link`,
-* `[[[<>]--[<>]]--[[<>]--[<>]]]`, a `11-link`.
+To print out the contents of the *link*, type `out`, followed by a space, and then provide the identifier of a *link*.
 
-## Convenient notation & the **3rd layer** of linking
+```
+binksi> out b
+([<0.0>] [<1.0>])
+```
 
-Instead of writing these sequences of characters over and over again, let's create a simple notation:
-* `[<>]` is `0`,
-* `[[<>]--[<>]]` is `1`,
-* Whenever we pair two subexpressions together, we concatenate them and parenthesize the concatenation. The parentheses might be dropped if it's the outermost concatenation,
-* `1` can also be written as `00`.
+### ⬖ Accessing and updating the sublinks
 
-If we rewrite the links from the first 3 layers in the aforementioned notation, we get:
-1. `0`
-2. `1`
-3. `01`, `10`, `11`
+To access or update a link, a non-empty list of directions needs to be specified.
+1. `<` means 'enter the left sublink'
+2. `>` means 'enter the right sublink'
 
-Let's now construct the **3rd layer** of linking:
-* `0(01)`, `0(10)`, `0(11)`
-* `1(01)`, `1(10)`, `1(11)`
-* `(01)0`, `(01)1`, `(01)(01)`, `(01)(10)`, `(01)(11)`
-* `(10)0`, `(10)1`, `(10)(01)`, `(10)(10)`, `(10)(11)`
-* `(11)0`, `(11)1`, `(11)(01)`, `(11)(10)`, `(11)(11)`
+Appending an asterisk (`*`) after a direction means `keep entering the left (right) sublink indefinitely until we run into a *Node*.
 
-It contains 21 elements.
+1. Accessing:
+   ```
+   ? _link _directions
+   ```
+2. Updating:
+   ```
+   ! _link _directions _either-an-identifier-or-a-link
+   ```
 
-These cardinalities (1, 1, 3, 21, etc.) form a sequence [A001699](https://oeis.org/A001699), which comes from the fact that the system of links represents the binary trees, and the layers represent the heights.
+```
+binksi> out d
+(([<-19.0>] ([<0.0>] [<1.0>])) [<0.0>])
+binksi> ? d <>*
+[<1.0>]
+binksi> ! d > b
+binksi> out d
+(([<-19.0>] ([<0.0>] [<1.0>])) ([<0.0>] [<1.0>]))
+```
 
-## How to verbally pronounce the parenthesized concatenations?
+Upon reacing a *Node* all the remaining directions are ignored.
 
-However you want. Maybe one could say ***in*** and ***out*** when referencing the open parenthesis and the close parenthesis respectively?
+### ⬖ Mirroring the link
 
-For example, `(10)(01)` is pronounced *in one zero out in zero one out*.
+To mirror a link, type the name of the new link, followed by a space, and then the name of the existing link with the tilde (`~`) prepended to it.
 
-## What data are contained within the links?
-
-*TBA*
-
-## So, are the links non-associative and non-commutative?
-
-*TBA*
+```
+binksi> d' ~d
+binksi> out d'
+(([<1.0>] [<0.0>]) (([<1.0>] [<0.0>]) [<-19.0>]))
+```

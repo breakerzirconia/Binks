@@ -3,50 +3,75 @@
 -- This software is released under the MIT License.
 -- https://opensource.org/licenses/MIT
 
-{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE LambdaCase        #-}
 
 module Eso.Binks.Core where
 
-import           Data.Set as Set
+import           Data.Scientific
+import           Data.Text       (Text, unpack)
 
-data Link = Node | Link :><: Link deriving (Eq, Ord)
+data BinksValue
+  = BinksNumber Scientific
+  | BinksUnit
+  deriving (Eq, Ord)
 
-instance Show Link where
+instance Show BinksValue where
+  show (BinksNumber i) = show i
+  show BinksUnit       = show ()
+
+data Link a
+  = Node a
+  | Link a :><: Link a
+  deriving (Eq, Ord)
+
+instance Show a => Show (Link a) where
   showsPrec p = \case
-    Node :><: Node -> showString "1"
-    Node           -> showString "0"
-    a :><: b       -> showParen (p > 10) $ showsPrec 11 a . showsPrec 11 b
+    Node b   -> showString "[<" . shows b . showString ">]"
+    a :><: b -> showParen True $ showsPrec 11 a . showString " " . showsPrec 11 b
 
-zero :: Link
-zero = Node
+instance {-# OVERLAPPING #-} Show (Link (Either Text BinksValue)) where
+  showsPrec p = \case
+    Node b   -> case b of
+      Left txt -> showString $ unpack txt
+      Right bv -> showString "[<" . shows bv . showString ">]"
+    a :><: b -> showParen True $ showsPrec 11 a . showString " " . showsPrec 11 b
 
-one :: Link
-one = zero :><: zero
+data Direction = L | R deriving (Eq, Ord)
 
-setsOfLinksUpToLayer :: Int -> [Set Link]
-setsOfLinksUpToLayer n =
-  if n < 0
-  then error "The designated layer number must be non-negative"
-  else go 0 []
-  where
-    go :: Int -> [Set Link] -> [Set Link]
-    go 0 _ = go 1 [singleton zero]
-    go i s
-      | i <= n =
-        let uns = unions s
-            cp = (\ ~(a, b) -> a :><: b) `Set.map` cartesianProduct uns uns
-        in go (i + 1) (cp `difference` uns : s)
-      | otherwise = reverse s
+instance Show Direction where
+  show L = "<"
+  show R = ">"
 
-layer :: Link -> Int
-layer = \case
-  Node     -> 0
-  a :><: b -> max (layer a) (layer b) + 1
+data Go = Once Direction | Forever Direction deriving (Eq, Ord)
 
-leftRotation :: Link -> Link
-leftRotation (a :><: (b :><: c)) = (a :><: b) :><: c
-leftRotation s                   = s
+instance Show Go where
+  show (Once d)    = show d
+  show (Forever d) = show d ++ "*"
 
-rightRotation :: Link -> Link
-rightRotation ((a :><: b) :><: c) = a :><: (b :><: c)
-rightRotation s                   = s
+data Instruction a
+  = CreateLink Text (Link a)
+  | Mirror Text Text
+  | Access Text [Go]
+  | Update Text [Go] (Either Text BinksValue)
+  | Out Text
+  | End
+  deriving Eq
+
+instance Show a => Show (Instruction a) where
+  show = \case
+    CreateLink txt li -> unwords [unpack txt, show li]
+    Mirror txt e      -> unwords [unpack txt, "~" ++ unpack e]
+    Access txt gos    -> unwords ["?", unpack txt, concatMap show gos]
+    Update txt gos bv -> unwords ["!", unpack txt, concatMap show gos, show bv]
+    Out txt           -> unwords ["out", unpack txt]
+    End               -> "."
+
+instance {-# OVERLAPPING #-} Show (Instruction (Either Text BinksValue)) where
+  show = \case
+    CreateLink txt li -> unwords [unpack txt, show li]
+    Mirror txt e      -> unwords [unpack txt, "~" ++ unpack e]
+    Access txt gos    -> unwords ["?", unpack txt, concatMap show gos]
+    Update txt gos bv -> unwords ["!", unpack txt, concatMap show gos, either unpack show bv]
+    Out txt           -> unwords ["out", unpack txt]
+    End               -> "."

@@ -1,5 +1,5 @@
 name:                binks
-version:             0.0.0.1
+version:             0.0.1
 github:              "breakerzirconia/binks"
 license:             MIT
 author:              "Constantine Ter-Matevosian"
@@ -22,12 +22,18 @@ description:         Please see the README on GitHub at <https://github.com/gith
 default-extensions:
 - LambdaCase
 - OverloadedStrings
+- RecordWildCards
+- TypeApplications
 
 dependencies:
 - base >= 4.7 && < 5
 - containers
+- haskeline
 - megaparsec
+- mtl
 - text
+- transformers
+- scientific
 
 library:
   source-dirs: src
@@ -52,7 +58,6 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - binks
-    - haskeline
 
 tests:
   binks-test:
