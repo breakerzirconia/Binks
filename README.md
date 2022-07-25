@@ -41,11 +41,11 @@ binksi> out b
 
 ### ⬖ Accessing and updating the sublinks
 
-To access or update a link, a non-empty list of directions needs to be specified.
+To access or update a sublink, a non-empty list of directions needs to be specified.
 1. `<` means 'enter the left sublink'
 2. `>` means 'enter the right sublink'
 
-Appending an asterisk (`*`) after a direction means `keep entering the left (right) sublink indefinitely until we run into a *Node*.
+Appending an asterisk (`*`) to a direction alters its definition: 'keep entering the left (right) sublink indefinitely until we run into a *Node*.'
 
 1. Accessing:
    ```
@@ -66,7 +66,7 @@ binksi> out d
 (([<-19.0>] ([<0.0>] [<1.0>])) ([<0.0>] [<1.0>]))
 ```
 
-Upon reacing a *Node* all the remaining directions are ignored.
+Upon reaching a *Node* all the remaining directions are ignored.
 
 ### ⬖ Mirroring the link
 
